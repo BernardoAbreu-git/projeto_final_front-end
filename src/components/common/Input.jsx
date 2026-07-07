@@ -1,8 +1,6 @@
-export default function Select({
+export default function Input({
 
     label,
-
-    children,
 
     ...props
 
@@ -18,27 +16,26 @@ export default function Select({
 
             </label>
 
-            <select
+            <input
 
                 {...props}
 
                 className="
 
                     w-full
-
                     border
-
+                    border-gray-300
                     rounded-xl
+                    px-4
+                    py-3
 
-                    p-3
+                    outline-none
+
+                    focus:border-blue-600
 
                 "
 
-            >
-
-                {children}
-
-            </select>
+            />
 
         </div>
 

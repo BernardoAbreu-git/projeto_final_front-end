@@ -7,19 +7,19 @@ export default function StatCard({
 
     return (
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition">
 
             <div className="flex justify-between items-center">
 
                 <div>
 
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 text-sm font-medium">
 
                         {title}
 
                     </p>
 
-                    <h2 className="text-3xl font-bold mt-2">
+                    <h2 className="text-4xl font-bold mt-2 text-gray-800">
 
                         {value}
 
@@ -27,7 +27,7 @@ export default function StatCard({
 
                 </div>
 
-                <div className={`${color} text-white p-4 rounded-xl text-2xl`}>
+                <div className={`${color} w-16 h-16 rounded-xl flex items-center justify-center text-white text-3xl`}>
 
                     {icon}
 

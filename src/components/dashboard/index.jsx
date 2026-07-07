@@ -1,5 +1,5 @@
-import Layout from "../../components/layout/Layout";
-import PageHeader from "../../components/layout/PageHeader";
+import Layout from "../layout/Layout";
+import PageHeader from "../layout/PageHeader";
 
 export default function Dashboard() {
 

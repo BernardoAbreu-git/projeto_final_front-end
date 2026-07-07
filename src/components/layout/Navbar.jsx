@@ -1,61 +1,79 @@
-import { FaBell } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
+import { FaBell, FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
 
-    /* =======================================================
-       BACK-END
-
-       Aqui virão os dados do usuário autenticado.
-
-       Exemplo:
-
-       const user = {
-            name: "Bernardo",
-            role: "Administrador",
-            avatar: "/uploads/avatar.png"
-       }
-
-    ======================================================== */
-
-    const user = {
-        name: "Bernardo",
-        role: "Administrador"
-    };
+    const { user, changeRole } = useAuth();
 
     return (
 
-        <header className="bg-white h-20 shadow flex items-center justify-between px-8">
+        <header className="bg-white shadow-sm h-20 flex justify-between items-center px-8">
 
+            <div>
 
-            <div className="flex items-center bg-gray-100 rounded-xl px-4 py-2 w-96">
+                <h2 className="text-2xl font-bold">
 
-                <FiSearch className="text-gray-500"/>
+                    Sistema Escolar
 
-                <input
-                    type="text"
-                    placeholder="Pesquisar..."
-                    className="bg-transparent outline-none ml-3 w-full"
-                />
+                </h2>
+
+                <p className="text-gray-500">
+
+                    Bem-vindo, {user.name}
+
+                </p>
 
             </div>
 
+            <div className="flex items-center gap-5">
 
-            <div className="flex items-center gap-6">
+                <FaBell
+                    className="text-2xl text-gray-500 cursor-pointer"
+                />
 
-                <button className="text-2xl text-gray-600 hover:text-blue-600 transition">
+                {/* =====================================================
 
-                    <FaBell/>
+                    BACK-END
 
-                </button>
+                    Remover este select.
+
+                    O perfil virá do JWT.
+
+                ===================================================== */}
+
+                <select
+
+                    value={user.role}
+
+                    onChange={(e)=>changeRole(e.target.value)}
+
+                    className="border rounded-lg px-3 py-2"
+
+                >
+
+                    <option>
+
+                        Administrador
+
+                    </option>
+
+                    <option>
+
+                        Professor
+
+                    </option>
+
+                    <option>
+
+                        Aluno
+
+                    </option>
+
+                </select>
 
                 <div className="flex items-center gap-3">
 
-                    <div className="w-12 h-12 rounded-full bg-blue-800 text-white flex items-center justify-center font-bold">
-
-                        {user.name.charAt(0)}
-
-                    </div>
+                    <FaUserCircle className="text-3xl text-blue-700"/>
 
                     <div>
 
@@ -65,11 +83,11 @@ export default function Navbar() {
 
                         </p>
 
-                        <span className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500">
 
                             {user.role}
 
-                        </span>
+                        </p>
 
                     </div>
 
