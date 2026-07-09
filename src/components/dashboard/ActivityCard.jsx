@@ -1,32 +1,41 @@
-export default function ActivityCard({ title, description, time }) {
+import Card from "../common/Card";
+
+export default function ActivityCard({ title, items = [] }) {
 
     return (
 
-        <div className="flex justify-between items-center py-4 border-b last:border-b-0">
+        <Card>
 
-            <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-5">
 
-                <h3 className="font-semibold text-gray-700">
+                {title}
 
-                    {title}
+            </h2>
 
-                </h3>
+            <div className="space-y-4">
 
-                <p className="text-gray-500 text-sm">
+                {items.map((item, index) => (
 
-                    {description}
+                    <div
+                        key={index}
+                        className="flex items-start gap-3 border-b pb-3 last:border-b-0"
+                    >
 
-                </p>
+                        <div className="w-3 h-3 rounded-full bg-blue-600 mt-2"></div>
+
+                        <p className="text-gray-600">
+
+                            {item}
+
+                        </p>
+
+                    </div>
+
+                ))}
 
             </div>
 
-            <span className="text-sm text-gray-400">
-
-                {time}
-
-            </span>
-
-        </div>
+        </Card>
 
     );
 
