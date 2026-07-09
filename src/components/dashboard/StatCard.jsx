@@ -1,8 +1,12 @@
+import React from "react";
+
 export default function StatCard({
+
     title,
     value,
     icon,
     color = "bg-blue-600"
+
 }) {
 
     return (
@@ -13,13 +17,13 @@ export default function StatCard({
 
                 <div>
 
-                    <p className="text-gray-500 text-sm font-medium">
+                    <p className="text-gray-500 text-lg">
 
                         {title}
 
                     </p>
 
-                    <h2 className="text-4xl font-bold mt-2 text-gray-800">
+                    <h2 className="text-5xl font-bold mt-3 text-gray-800">
 
                         {value}
 
@@ -27,7 +31,7 @@ export default function StatCard({
 
                 </div>
 
-                <div className={`${color} w-16 h-16 rounded-xl flex items-center justify-center text-white text-3xl`}>
+                <div className={`${color} w-20 h-20 rounded-2xl flex items-center justify-center text-white text-4xl`}>
 
                     {icon}
 
