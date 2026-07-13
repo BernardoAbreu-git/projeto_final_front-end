@@ -9,11 +9,11 @@ import {
   FaGraduationCap,
 } from "react-icons/fa";
 
+import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-export default function Sidebar() {
-
+export default function Sidebar({ open, setOpen }) {
   /* ===============================================
       BACK-END
 
@@ -26,11 +26,24 @@ export default function Sidebar() {
   =============================================== */
 
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
-    <aside className="w-72 min-h-screen bg-slate-900 text-white flex flex-col">
-
-      {/* LOGO */}
+<aside
+    className={`
+        fixed md:static
+        top-0 left-0
+        z-50
+        w-72
+        min-h-screen
+        bg-slate-900
+        text-white
+        flex flex-col
+        transform transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+    `}
+>      {/* LOGO */}
 
       <div className="h-20 border-b border-slate-700 flex items-center justify-center gap-3">
 
@@ -53,6 +66,12 @@ export default function Sidebar() {
         </div>
 
       </div>
+      <button
+    className="md:hidden absolute top-4 right-4 text-2xl"
+    onClick={() => setOpen(false)}
+>
+    ✕
+</button>
 
       {/* MENU */}
 
@@ -61,9 +80,10 @@ export default function Sidebar() {
         {/* Dashboard aparece para todos */}
 
         <MenuItem
-          to="/"
+          to="/dashboard"
           icon={<FaHome />}
           text="Dashboard"
+           onClick={() => setOpen(false)}
         />
 
         {/* Apenas Administrador */}
@@ -148,13 +168,29 @@ export default function Sidebar() {
 
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 py-3 transition">
+        <button
+  onClick={() => {
 
-          <FaSignOutAlt />
+    /* ===============================================
+        BACK-END
 
-          Sair
+        localStorage.removeItem("token");
 
-        </button>
+        navigate("/login");
+
+    =============================================== */
+
+    navigate("/login");
+
+  }}
+  className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 py-3 transition"
+>
+
+  <FaSignOutAlt />
+
+  Sair
+
+</button>
 
       </div>
 
@@ -162,14 +198,13 @@ export default function Sidebar() {
   );
 }
 
-function MenuItem({ to, icon, text }) {
-
+function MenuItem({ to, icon, text, onClick }) {
   return (
 
     <NavLink
 
       to={to}
-
+      onClick={onClick}
       className={({ isActive }) =>
         `flex items-center gap-4 p-4 rounded-xl transition
         ${

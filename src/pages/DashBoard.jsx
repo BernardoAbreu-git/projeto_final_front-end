@@ -9,7 +9,6 @@ import {
   FaSchool,
   FaClipboardList,
   FaBook,
-  FaChalkboardTeacher,
   FaUserGraduate,
   FaChartLine
 } from "react-icons/fa";
@@ -45,7 +44,7 @@ export default function Dashboard() {
 
             =========================================== */}
 
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
                 {user.role === "Administrador" && (
                     <>
@@ -92,18 +91,16 @@ export default function Dashboard() {
                 )}
 
                 {user.role === "Aluno" && (
-                    <>
-                        <StatCard
-                            title="Média Geral"
-                            value="8.9"
-                            icon={<FaChartLine />}
-                        />
-                    </>
+                    <StatCard
+                        title="Média Geral"
+                        value="8.9"
+                        icon={<FaChartLine />}
+                    />
                 )}
 
             </div>
 
-            <div className="grid grid-cols-2 gap-6 mt-8">
+            <div className="grid grid-cols-1 lg:grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
 
                 <ActivityCard
                     title="Últimas Atividades"
