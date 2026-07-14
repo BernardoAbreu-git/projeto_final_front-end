@@ -1,8 +1,12 @@
 import { FaGraduationCap } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 
 export default function Login() {
+
+    const navigate = useNavigate();
 
     /* =========================================================
 
@@ -19,7 +23,7 @@ export default function Login() {
 
         localStorage.setItem("token", response.data.token)
 
-        navigate("/")
+        navigate("/dashboard")
 
     ========================================================== */
 
@@ -31,7 +35,7 @@ export default function Login() {
 
                 <div className="text-center mb-10">
 
-                    <FaGraduationCap className="mx-auto text-6xl text-blue-700"/>
+                    <FaGraduationCap className="mx-auto text-6xl text-blue-700" />
 
                     <h1 className="text-3xl font-bold mt-4">
 
@@ -50,27 +54,23 @@ export default function Login() {
                 <form className="space-y-5">
 
                     <Input
-
                         label="E-mail"
-
                         placeholder="Digite seu e-mail"
-
                     />
 
                     <Input
-
                         label="Senha"
-
                         type="password"
-
                         placeholder="Digite sua senha"
-
                     />
 
-                    <Button>
-
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/dashboard");
+                        }}
+                    >
                         Entrar
-
                     </Button>
 
                 </form>

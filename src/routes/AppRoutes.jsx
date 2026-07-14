@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
@@ -10,41 +10,14 @@ import Profile from "../pages/Profile";
 
 export default function AppRoutes() {
 
-  /* ===============================================
-      BACK-END
-
-      Aqui será feita a autenticação.
-
-      Exemplo:
-
-      const token = localStorage.getItem("token");
-
-      if (token) {
-          return Dashboard;
-      }
-
-      else {
-
-          return Login;
-
-      }
-
-  =============================================== */
-
-  const logged = true; // depois o back-end muda isso
-
-  if (!logged) {
-    return (
-      <Routes>
-        <Route path="*" element={<Login />} />
-      </Routes>
-    );
-  }
-
   return (
     <Routes>
 
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<Navigate to="/login" />} />
+
+      <Route path="/login" element={<Login />} />
+
+      <Route path="/dashboard" element={<Dashboard />} />
 
       <Route path="/users" element={<Users />} />
 
@@ -58,4 +31,5 @@ export default function AppRoutes() {
 
     </Routes>
   );
+
 }
