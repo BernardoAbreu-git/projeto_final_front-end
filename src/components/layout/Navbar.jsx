@@ -1,100 +1,65 @@
-import { FaBell, FaUserCircle, FaBars } from "react-icons/fa";
+import { FaUserCircle, FaBars } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar({ setSidebarOpen }) {
-    const { user, changeRole } = useAuth();
+
+    const { user } = useAuth();
 
     return (
 
-        
+        <header className="bg-white shadow-sm px-4 md:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
 
-<header className="bg-white shadow-sm px-4 md:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div className="flex items-center gap-3">
 
-    <button
-        className="md:hidden text-2xl"
-        onClick={() => setSidebarOpen(true)}
-    >
-        <FaBars />
-    </button>
-
-    <div>
-
-        <h2 className="text-xl md:text-2xl font-bold">
-            Sistema Escolar
-        </h2>
-
-        <p className="text-gray-500">
-            Bem-vindo, {user.name}
-        </p>
-
-    </div>
-
-</div>
-
-<div className="flex flex-wrap items-center gap-3 md:gap-5">
-                <FaBell
-    className="text-xl md:text-2xl text-gray-500 cursor-pointer"
-/>
-
-                {/* =====================================================
-
-                    BACK-END
-
-                    Remover este select.
-
-                    O perfil virá do JWT.
-
-                ===================================================== */}
-
-                <select
-
-                    value={user.role}
-
-                    onChange={(e)=>changeRole(e.target.value)}
-
-                    className="border rounded-lg px-3 py-2"
-
+                <button
+                    className="md:hidden text-2xl"
+                    onClick={() => setSidebarOpen(true)}
                 >
+                    <FaBars />
+                </button>
 
-                    <option>
+                <div>
 
-                        Administrador
+                    <h2 className="text-xl md:text-2xl font-bold">
+                        Sistema Escolar
+                    </h2>
 
-                    </option>
+                    <p className="text-gray-500">
+                        Bem-vindo, {user.name}
+                    </p>
 
-                    <option>
+                </div>
 
-                        Professor
+            </div>
 
-                    </option>
+            {/* ===============================================
+                BACK-END
 
-                    <option>
+                O usuário autenticado virá do JWT.
 
-                        Aluno
+                Exemplo:
 
-                    </option>
+                {
+                    id,
+                    name,
+                    role
+                }
 
-                </select>
+            =============================================== */}
 
-                <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
 
-<FaUserCircle className="text-2xl md:text-3xl text-blue-700"/>
-                    <div>
+                <FaUserCircle className="text-3xl text-blue-700" />
 
-                        <p className="font-semibold">
+                <div>
 
-                            {user.name}
+                    <p className="font-semibold">
+                        {user.name}
+                    </p>
 
-                        </p>
-
-                        <p className="text-sm text-gray-500">
-
-                            {user.role}
-
-                        </p>
-
-                    </div>
+                    <p className="text-sm text-gray-500">
+                        {user.role}
+                    </p>
 
                 </div>
 
