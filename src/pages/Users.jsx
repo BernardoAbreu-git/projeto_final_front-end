@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import Swal from "sweetalert2";
 
 import Layout from "../components/layout/Layout";
@@ -22,6 +22,11 @@ import {
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+import { useEffect } from "react";
+import api from "../services/Api";
+import { useState, useEffect } from "react";
+import api from "../services/Api";
+
 export default function Users() {
     const { user } = useAuth();
     if(user.role!=="Administrador"){
@@ -42,32 +47,63 @@ export default function Users() {
 
     ========================================================= */
 
-    const [users, setUsers] = useState([
+const [users, setUsers] = useState([
+            useEffect(() => {
 
-        {
-            id: 1,
-            name: "Bernardo Abreu",
-            email: "bernardo@email.com",
-            role: "Administrador"
-        },
+    loadUsers();
 
-        {
-            id: 2,
-            name: "Carlos Silva",
-            email: "carlos@email.com",
-            role: "Professor"
-        },
+}, []);
 
-        {
-            id: 3,
-            name: "Ana Souza",
-            email: "ana@email.com",
-            role: "Aluno"
-        }
+async function loadUsers() {
 
-    ]);
+    try {
+
+        const response = await api.get("/users");
+
+        setUsers(response.data);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+    useEffect(() => {
+
+    loadUsers();
+
+}, []);
+
+async function loadUsers() {
+
+    try {
+
+        const response = await api.get("/users");
+
+        setUsers(response.data);
+
+    } catch (error) {
+
+        console.error(error);
+
+        Swal.fire({
+
+            icon: "error",
+
+            title: "Erro",
+
+            text: "Não foi possível carregar os usuários."
+
+        });
+
+    }
+
+}
 
     const [search, setSearch] = useState("");
+    
 
     const [open, setOpen] = useState(false);
 
