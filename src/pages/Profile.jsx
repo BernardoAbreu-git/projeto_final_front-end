@@ -14,27 +14,11 @@ export default function Profile() {
 
     const { user } = useAuth();
 
-    /* =========================================================
-
-        BACK-END
-
-        GET /profile
-
-        const response = await api.get("/profile");
-
-        setForm(response.data);
-
-    ========================================================= */
-
     const [form, setForm] = useState({
 
-        name: user.name,
+        name: user?.name || "",
 
-        email: user.email,
-
-        role: user.role,
-
-        password: ""
+        role: user?.role || ""
 
     });
 
@@ -51,16 +35,6 @@ export default function Profile() {
     }
 
     function saveProfile() {
-
-        /* =====================================================
-
-            BACK-END
-
-            PUT /profile
-
-            await api.put("/profile", form);
-
-        ===================================================== */
 
         Swal.fire({
 
@@ -104,37 +78,11 @@ export default function Profile() {
 
                     <Input
 
-                        label="E-mail"
-
-                        name="email"
-
-                        value={form.email}
-
-                        onChange={handleChange}
-
-                    />
-
-                    <Input
-
                         label="Cargo"
 
                         value={form.role}
 
                         disabled
-
-                    />
-
-                    <Input
-
-                        label="Nova Senha"
-
-                        type="password"
-
-                        name="password"
-
-                        value={form.password}
-
-                        onChange={handleChange}
 
                     />
 

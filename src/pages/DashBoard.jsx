@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import Layout from "../components/layout/Layout";
 import PageHeader from "../components/layout/PageHeader";
 
@@ -9,15 +11,46 @@ import {
   FaSchool,
   FaClipboardList,
   FaBook,
-  FaUserGraduate,
   FaChartLine
 } from "react-icons/fa";
 
 import { useAuth } from "../context/AuthContext";
 
+import api from "../services/Api";
+
 export default function Dashboard() {
 
     const { user } = useAuth();
+
+    const [counts, setCounts] = useState({
+        users: 0,
+        classes: 0,
+        enrollments: 0,
+        grades: 0
+    });
+
+    useEffect(() => {
+        async function load() {
+            try {
+                const [usersRes, classesRes, enrollmentsRes, gradesRes] = await Promise.all([
+                    api.get("/users").catch(() => ({ data: [] })),
+                    api.get("/modules/classes").catch(() => ({ data: [] })),
+                    api.get("/modules/enrollments").catch(() => ({ data: [] })),
+                    api.get("/notes").catch(() => ({ data: [] }))
+                ]);
+
+                setCounts({
+                    users: usersRes.data.length,
+                    classes: classesRes.data.length,
+                    enrollments: enrollmentsRes.data.length,
+                    grades: gradesRes.data.length
+                });
+            } catch (error) {
+                console.error("Erro ao buscar dados do dashboard:", error);
+            }
+        }
+        load();
+    }, []);
 
     return (
 
@@ -28,47 +61,31 @@ export default function Dashboard() {
                 subtitle="Resumo geral do sistema"
             />
 
-            {/* ==========================================
-                BACK-END
-
-                GET /dashboard
-
-                Retorno esperado:
-
-                {
-                    users,
-                    classes,
-                    enrollments,
-                    grades
-                }
-
-            =========================================== */}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
                 {user.role === "Administrador" && (
                     <>
                         <StatCard
                             title="Usuários"
-                            value="154"
+                            value={counts.users}
                             icon={<FaUsers />}
                         />
 
                         <StatCard
                             title="Turmas"
-                            value="18"
+                            value={counts.classes}
                             icon={<FaSchool />}
                         />
 
                         <StatCard
                             title="Matrículas"
-                            value="420"
+                            value={counts.enrollments}
                             icon={<FaClipboardList />}
                         />
 
                         <StatCard
                             title="Notas"
-                            value="1260"
+                            value={counts.grades}
                             icon={<FaBook />}
                         />
                     </>
@@ -77,30 +94,30 @@ export default function Dashboard() {
                 {user.role === "Professor" && (
                     <>
                         <StatCard
-                            title="Minhas Turmas"
-                            value="5"
+                            title="Turmas"
+                            value={counts.classes}
                             icon={<FaSchool />}
                         />
 
                         <StatCard
-                            title="Alunos"
-                            value="172"
-                            icon={<FaUserGraduate />}
+                            title="Notas"
+                            value={counts.grades}
+                            icon={<FaBook />}
                         />
                     </>
                 )}
 
                 {user.role === "Aluno" && (
                     <StatCard
-                        title="Média Geral"
-                        value="8.9"
+                        title="Notas"
+                        value={counts.grades}
                         icon={<FaChartLine />}
                     />
                 )}
 
             </div>
 
-            <div className="grid grid-cols-1 lg:grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
 
                 <ActivityCard
                     title="Últimas Atividades"

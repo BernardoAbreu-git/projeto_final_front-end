@@ -1,31 +1,46 @@
+import { useState } from "react";
 import { FaGraduationCap } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 
+import { login as authLogin } from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
+
 export default function Login() {
 
     const navigate = useNavigate();
 
-    /* =========================================================
+    const { login } = useAuth();
 
-        BACK-END
+    const [name, setName] = useState("");
 
-        POST /login
+    const [password, setPassword] = useState("");
 
-        const response = await api.post("/login", {
+    const [error, setError] = useState("");
 
-            email,
-            password
+    async function handleSubmit(e) {
 
-        });
+        e.preventDefault();
 
-        localStorage.setItem("token", response.data.token)
+        setError("");
 
-        navigate("/dashboard")
+        try {
 
-    ========================================================== */
+            const data = await authLogin(name, password);
+
+            login(data.user, data.token);
+
+            navigate("/dashboard");
+
+        } catch (err) {
+
+            setError(err.response?.data?.error || "Erro ao fazer login.");
+
+        }
+
+    }
 
     return (
 
@@ -51,26 +66,34 @@ export default function Login() {
 
                 </div>
 
-                <form className="space-y-5">
+                <form className="space-y-5" onSubmit={handleSubmit}>
 
                     <Input
-                        label="E-mail"
-                        placeholder="Digite seu e-mail"
+
+                        label="Nome"
+                        placeholder="Digite seu nome"
+                        name="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
 
                     <Input
                         label="Senha"
                         type="password"
                         placeholder="Digite sua senha"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <Button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/dashboard");
-                        }}
-                    >
+                    {error && (
+                        <p className="text-red-500 text-sm text-center">{error}</p>
+                    )}
+
+                    <Button type="submit">
+
                         Entrar
+
                     </Button>
 
                 </form>

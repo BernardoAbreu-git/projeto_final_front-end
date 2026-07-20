@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 import Layout from "../components/layout/Layout";
@@ -7,7 +7,6 @@ import PageHeader from "../components/layout/PageHeader";
 import Card from "../components/common/Card";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
-import Select from "../components/common/Select";
 import SearchBar from "../components/common/SearchBar";
 import Modal from "../components/common/Modal";
 
@@ -17,433 +16,226 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 import { useAuth } from "../context/AuthContext";
 
+import api from "../services/Api";
+
 export default function Classes() {
 
     const { user } = useAuth();
 
-    /* =========================================================
-
-        BACK-END
-
-        ADMIN
-
-        GET /classes
-        POST /classes
-        PUT /classes/:id
-        DELETE /classes/:id
-
-        PROFESSOR
-
-        GET /classes/my
-
-        ALUNO
-
-        GET /classes/student
-
-    ========================================================= */
-
-    const [classes, setClasses] = useState([
-
-        {
-            id: 1,
-            name: "3º Desenvolvimento",
-            year: "2026",
-            teacher: "Carlos Silva"
-        },
-
-        {
-            id: 2,
-            name: "2º Desenvolvimento",
-            year: "2026",
-            teacher: "Maria Oliveira"
-        }
-
-    ]);
-
+    const [classes, setClasses] = useState([]);
     const [search, setSearch] = useState("");
-
     const [open, setOpen] = useState(false);
-
     const [editingClass, setEditingClass] = useState(null);
-
     const [form, setForm] = useState({
-
-        name: "",
-
-        year: "",
-
-        teacher: ""
-
+        matter: "",
+        teacher: "",
+        room: "",
+        schedule: ""
     });
 
-    function handleChange(e){
+    useEffect(() => {
+        fetchClasses();
+    }, []);
 
+    async function fetchClasses() {
+        try {
+            const data = await api.get("/modules/classes");
+            setClasses(data.data);
+        } catch (error) {
+            console.error("Erro ao buscar turmas:", error);
+        }
+    }
+
+    function handleChange(e) {
         setForm({
-
             ...form,
-
-            [e.target.name]:e.target.value
-
+            [e.target.name]: e.target.value
         });
-
     }
 
-    function openNewClass(){
-
+    function openNewClass() {
         setEditingClass(null);
-
         setForm({
-
-            name:"",
-
-            year:"",
-
-            teacher:""
-
+            matter: "",
+            teacher: "",
+            room: "",
+            schedule: ""
         });
-
         setOpen(true);
-
     }
 
-    function editClass(item){
-
+    function editClass(item) {
         setEditingClass(item);
-
-        setForm(item);
-
+        setForm({
+            matter: item.matter,
+            teacher: item.teacher,
+            room: item.room,
+            schedule: item.schedule
+        });
         setOpen(true);
-
     }
 
-    function saveClass(){
+    async function saveClass() {
+        try {
+            const payload = {
+                ...form,
+                userId: user.id
+            };
 
-        /* =========================================
-
-            BACK-END
-
-            POST /classes
-
-            PUT /classes/:id
-
-        ========================================= */
-
-        if(editingClass){
-
-            setClasses(
-
-                classes.map(item=>
-
-                    item.id===editingClass.id
-
-                        ?{
-
-                            ...editingClass,
-
-                            ...form
-
-                        }
-
-                        :item
-
-                )
-
-            );
-
-        }
-
-        else{
-
-            setClasses([
-
-                ...classes,
-
-                {
-
-                    id:Date.now(),
-
-                    ...form
-
-                }
-
-            ]);
-
-        }
-
-        setOpen(false);
-
-    }
-
-    function deleteClass(id){
-
-        Swal.fire({
-
-            title:"Excluir turma?",
-
-            text:"Esta ação não poderá ser desfeita.",
-
-            icon:"warning",
-
-            showCancelButton:true,
-
-            confirmButtonText:"Excluir",
-
-            cancelButtonText:"Cancelar"
-
-        }).then(result=>{
-
-            if(result.isConfirmed){
-
-                /* =========================================
-
-                    BACK-END
-
-                    DELETE /classes/:id
-
-                ========================================= */
-
-                setClasses(
-
-                    classes.filter(item=>item.id!==id)
-
-                );
-
+            if (editingClass) {
+                await api.put(`/modules/classes/${editingClass.id}`, payload);
+            } else {
+                await api.post("/modules/classes", payload);
             }
 
-        });
-
+            setOpen(false);
+            fetchClasses();
+            Swal.fire({
+                title: "Sucesso",
+                text: editingClass ? "Turma atualizada." : "Turma criada.",
+                icon: "success"
+            });
+        } catch (error) {
+            Swal.fire({
+                title: "Erro",
+                text: error.response?.data?.error || "Erro ao salvar turma.",
+                icon: "error"
+            });
+        }
     }
 
-    const filteredClasses = classes.filter(item=>
+    function deleteClass(id) {
+        Swal.fire({
+            title: "Excluir turma?",
+            text: "Esta ação não poderá ser desfeita.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Excluir",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await api.delete(`/modules/classes/${id}`);
+                    fetchClasses();
+                    Swal.fire({
+                        title: "Sucesso",
+                        text: "Turma removida.",
+                        icon: "success"
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        title: "Erro",
+                        text: error.response?.data?.error || "Erro ao excluir turma.",
+                        icon: "error"
+                    });
+                }
+            }
+        });
+    }
 
-        item.name.toLowerCase().includes(search.toLowerCase())
-
+    const filteredClasses = classes.filter(item =>
+        item.matter.toLowerCase().includes(search.toLowerCase()) ||
+        item.teacher.toLowerCase().includes(search.toLowerCase())
     );
 
-    return(
-
+    return (
         <Layout>
-
             <PageHeader
-
                 title="Turmas"
-
                 subtitle="Gerenciamento de Turmas"
-
             />
 
             <Card>
-
                 <div className="flex justify-between items-center mb-6">
-
                     <SearchBar
-
                         placeholder="Pesquisar turma..."
-
                         value={search}
-
-                        onChange={(e)=>setSearch(e.target.value)}
-
+                        onChange={(e) => setSearch(e.target.value)}
                     />
-
-                    {user.role==="Administrador" &&(
-
+                    {(user.role === "Administrador" || user.role === "Professor") && (
                         <Button
-
-                            icon={<FaPlus/>}
-
+                            icon={<FaPlus />}
                             onClick={openNewClass}
-
                         >
-
                             Nova Turma
-
                         </Button>
-
                     )}
-
                 </div>
 
                 <DataTable
-
-                    columns={[
-
-                        "ID",
-
-                        "Turma",
-
-                        "Ano",
-
-                        "Professor"
-
-                    ]}
-
+                    columns={["ID", "Matéria", "Professor", "Sala", "Horário"]}
                     data={filteredClasses}
-
-                    actions={(item)=>
-
-                        user.role==="Administrador" &&(
-
+                    actions={(item) =>
+                        (user.role === "Administrador" || user.role === "Professor") && (
                             <div className="flex gap-2">
-
                                 <Button
-
                                     color="green"
-
-                                    icon={<FaEdit/>}
-
-                                    onClick={()=>editClass(item)}
-
+                                    icon={<FaEdit />}
+                                    onClick={() => editClass(item)}
                                 />
-
                                 <Button
-
                                     color="red"
-
-                                    icon={<FaTrash/>}
-
-                                    onClick={()=>deleteClass(item.id)}
-
+                                    icon={<FaTrash />}
+                                    onClick={() => deleteClass(item.id)}
                                 />
-
                             </div>
-
                         )
-
                     }
-
                 />
-
             </Card>
 
-            {user.role==="Administrador" &&(
-
+            {(user.role === "Administrador" || user.role === "Professor") && (
                 <Modal
-
                     open={open}
-
-                    onClose={()=>setOpen(false)}
-
-                    title={
-
-                        editingClass
-
-                        ?"Editar Turma"
-
-                        :"Nova Turma"
-
-                    }
-
+                    onClose={() => setOpen(false)}
+                    title={editingClass ? "Editar Turma" : "Nova Turma"}
                 >
-
                     <div className="space-y-4">
-
                         <Input
-
-                            label="Nome da Turma"
-
-                            name="name"
-
-                            value={form.name}
-
+                            label="Matéria"
+                            name="matter"
+                            value={form.matter}
                             onChange={handleChange}
-
                         />
 
                         <Input
-
-                            label="Ano"
-
-                            name="year"
-
-                            value={form.year}
-
-                            onChange={handleChange}
-
-                        />
-
-                        <Select
-
                             label="Professor"
-
                             name="teacher"
-
                             value={form.teacher}
-
                             onChange={handleChange}
+                        />
 
-                        >
+                        <Input
+                            label="Sala"
+                            name="room"
+                            value={form.room}
+                            onChange={handleChange}
+                        />
 
-                            {/* ===================================
-
-                                BACK-END
-
-                                GET /teachers
-
-                            ==================================== */}
-
-                            <option value="">
-
-                                Selecione
-
-                            </option>
-
-                            <option>
-
-                                Carlos Silva
-
-                            </option>
-
-                            <option>
-
-                                Maria Oliveira
-
-                            </option>
-
-                            <option>
-
-                                João Pereira
-
-                            </option>
-
-                        </Select>
+                        <Input
+                            label="Horário"
+                            name="schedule"
+                            value={form.schedule}
+                            onChange={handleChange}
+                        />
 
                         <div className="flex justify-end gap-3">
-
                             <Button
-
                                 color="gray"
-
-                                onClick={()=>setOpen(false)}
-
+                                onClick={() => setOpen(false)}
                             >
-
                                 Cancelar
-
                             </Button>
-
                             <Button
-
                                 color="blue"
-
                                 onClick={saveClass}
-
                             >
-
                                 Salvar
-
                             </Button>
-
                         </div>
-
                     </div>
-
                 </Modal>
-
             )}
-
         </Layout>
-
     );
-
 }

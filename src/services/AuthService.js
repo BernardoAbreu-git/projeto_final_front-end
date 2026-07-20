@@ -1,32 +1,11 @@
-        import api from "./Api";
+import api from "./Api";
+import { jwtDecode } from "jwt-decode";
 
-// ======================================================
-//
-// BACK-END
-//
-// POST /login
-//
-// Esperado:
-//
-// {
-//     email,
-//     password
-// }
-//
-// Retorno:
-//
-// {
-//     token,
-//     user
-// }
-//
-// ======================================================
+export async function login(name, password) {
 
-export async function login(email, password) {
+    const response = await api.post("/auth/login", {
 
-    const response = await api.post("/login", {
-
-        email,
+        name,
         password
 
     });
@@ -35,37 +14,19 @@ export async function login(email, password) {
 
 }
 
-// ======================================================
-//
-// BACK-END
-//
-// GET /me
-//
-// Retorna o usuário autenticado.
-//
-// ======================================================
+export async function register(name, password, role) {
 
-export async function getMe() {
+    const response = await api.post("/auth/register", {
 
-    const response = await api.get("/me");
+        name,
+        password,
+        role
+
+    });
 
     return response.data;
 
 }
-
-// ======================================================
-//
-// BACK-END
-//
-// Logout.
-//
-// Se houver endpoint:
-//
-// POST /logout
-//
-// Caso contrário, basta remover o token.
-//
-// ======================================================
 
 export function logout() {
 
@@ -73,23 +34,11 @@ export function logout() {
 
 }
 
-// ======================================================
-//
-// Verifica se existe um token salvo.
-//
-// ======================================================
-
 export function isAuthenticated() {
 
     return !!localStorage.getItem("token");
 
 }
-
-// ======================================================
-//
-// Salva o token.
-//
-// ======================================================
 
 export function saveToken(token) {
 
@@ -97,14 +46,26 @@ export function saveToken(token) {
 
 }
 
-// ======================================================
-//
-// Retorna o token.
-//
-// ======================================================
-
 export function getToken() {
 
     return localStorage.getItem("token");
+
+}
+
+export function getUserFromToken() {
+
+    const token = getToken();
+
+    if (!token) return null;
+
+    try {
+
+        return jwtDecode(token);
+
+    } catch {
+
+        return null;
+
+    }
 
 }
