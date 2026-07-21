@@ -25,7 +25,7 @@ export default function Sidebar({ open, setOpen }) {
 
   =============================================== */
 
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -170,18 +170,8 @@ export default function Sidebar({ open, setOpen }) {
 
         <button
   onClick={() => {
-
-    /* ===============================================
-        BACK-END
-
-        localStorage.removeItem("token");
-
-        navigate("/login");
-
-    =============================================== */
-
+    logout();
     navigate("/login");
-
   }}
   className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 py-3 transition"
 >
