@@ -4,6 +4,8 @@ export default function DataTable({
 
     data,
 
+    keys,
+
     actions
 
 }) {
@@ -64,7 +66,7 @@ export default function DataTable({
 
                                 {
 
-                                    Object.values(row).map((value,i)=>(
+                                    (keys ? keys.map(k => row[k]) : Object.values(row)).map((value,i)=>(
 
                                         <td
                                             key={i}

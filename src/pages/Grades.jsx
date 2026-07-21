@@ -30,6 +30,7 @@ export default function Grades() {
     const [editingGrade, setEditingGrade] = useState(null);
     const [form, setForm] = useState({
         exam: "",
+        score: "",
         userId: "",
         classRoomId: ""
     });
@@ -78,6 +79,7 @@ export default function Grades() {
         setEditingGrade(null);
         setForm({
             exam: "",
+            score: "",
             userId: "",
             classRoomId: ""
         });
@@ -85,11 +87,14 @@ export default function Grades() {
     }
 
     function editGrade(item) {
-        setEditingGrade(item);
+        const original = grades.find(g => g.id === item.id);
+        if (!original) return;
+        setEditingGrade(original);
         setForm({
-            exam: item.exam,
-            userId: item.userId || "",
-            classRoomId: item.classRoomId || ""
+            exam: original.exam,
+            score: original.score ?? "",
+            userId: original.userId || "",
+            classRoomId: original.classRoomId || ""
         });
         setOpen(true);
     }
@@ -177,11 +182,13 @@ export default function Grades() {
                 </div>
 
                 <DataTable
-                    columns={["ID", "Aluno", "Disciplina", "Nota"]}
+                    columns={["ID", "Aluno", "Disciplina", "Nota", "Exame"]}
+                    keys={["id", "student", "subject", "score", "exam"]}
                     data={filteredGrades.map(item => ({
                         id: item.id,
                         student: item.User?.name || "-",
                         subject: item.ClassRoom?.matter || "-",
+                        score: item.score,
                         exam: item.exam
                     }))}
                     actions={(item) =>
@@ -214,6 +221,14 @@ export default function Grades() {
                             label="Nota (exame)"
                             name="exam"
                             value={form.exam}
+                            onChange={handleChange}
+                        />
+
+                        <Input
+                            label="Pontuação"
+                            name="score"
+                            type="number"
+                            value={form.score}
                             onChange={handleChange}
                         />
 

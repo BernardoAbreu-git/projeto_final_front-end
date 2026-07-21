@@ -164,7 +164,14 @@ export default function Classes() {
 
                 <DataTable
                     columns={["ID", "Matéria", "Professor", "Sala", "Horário"]}
-                    data={filteredClasses}
+                    keys={["id", "matter", "teacher", "room", "schedule"]}
+                    data={filteredClasses.map(item => ({
+                        id: item.id,
+                        matter: item.matter,
+                        teacher: item.teacher,
+                        room: item.room,
+                        schedule: item.schedule
+                    }))}
                     actions={(item) =>
                         (user.role === "Administrador" || user.role === "Professor") && (
                             <div className="flex gap-2">

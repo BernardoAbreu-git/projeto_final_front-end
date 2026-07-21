@@ -64,14 +64,16 @@ export default function Enrollments() {
         setOpen(true);
     }
 
-    function editEnrollment(enrollment) {
-        setEditingEnrollment(enrollment);
+    function editEnrollment(item) {
+        const original = enrollments.find(e => e.id === item.id);
+        if (!original) return;
+        setEditingEnrollment(original);
         setForm({
-            name: enrollment.name,
-            email: enrollment.email,
-            phone: enrollment.phone,
-            enrollmentDate: enrollment.enrollmentDate
-                ? new Date(enrollment.enrollmentDate).toISOString().split("T")[0]
+            name: original.name,
+            email: original.email,
+            phone: original.phone,
+            enrollmentDate: original.enrollmentDate
+                ? new Date(original.enrollmentDate).toISOString().split("T")[0]
                 : ""
         });
         setOpen(true);
@@ -164,8 +166,12 @@ export default function Enrollments() {
 
                 <DataTable
                     columns={["ID", "Nome", "Email", "Telefone", "Data"]}
+                    keys={["id", "name", "email", "phone", "enrollmentDate"]}
                     data={filteredEnrollments.map(item => ({
-                        ...item,
+                        id: item.id,
+                        name: item.name,
+                        email: item.email,
+                        phone: item.phone,
                         enrollmentDate: item.enrollmentDate
                             ? new Date(item.enrollmentDate).toLocaleDateString("pt-BR")
                             : ""

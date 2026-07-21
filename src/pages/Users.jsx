@@ -55,7 +55,7 @@ export default function Users() {
     }, []);
 
     if (user.role !== "Administrador") {
-        return <Navigate to="/" />;
+        return <Navigate to="/dashboard" />;
     }
 
     async function fetchUsers() {
@@ -177,8 +177,10 @@ export default function Users() {
 
                 <DataTable
                     columns={["ID", "Nome", "Cargo"]}
+                    keys={["id", "name", "role"]}
                     data={filteredUsers.map(u => ({
-                        ...u,
+                        id: u.id,
+                        name: u.name,
                         role: ROLE_LABELS[u.role] || u.role
                     }))}
                     actions={(u) => (

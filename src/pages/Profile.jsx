@@ -10,9 +10,11 @@ import Button from "../components/common/Button";
 
 import { useAuth } from "../context/AuthContext";
 
+import api from "../services/Api";
+
 export default function Profile() {
 
-    const { user } = useAuth();
+    const { user, getBackendRole } = useAuth();
 
     const [form, setForm] = useState({
 
@@ -34,17 +36,41 @@ export default function Profile() {
 
     }
 
-    function saveProfile() {
+    async function saveProfile() {
 
-        Swal.fire({
+        try {
 
-            icon: "success",
+            await api.put(`/users/${user.id}`, {
 
-            title: "Sucesso",
+                name: form.name,
 
-            text: "Perfil atualizado!"
+                role: getBackendRole()
 
-        });
+            });
+
+            Swal.fire({
+
+                icon: "success",
+
+                title: "Sucesso",
+
+                text: "Perfil atualizado!"
+
+            });
+
+        } catch (error) {
+
+            Swal.fire({
+
+                icon: "error",
+
+                title: "Erro",
+
+                text: error.response?.data?.error || "Erro ao atualizar perfil."
+
+            });
+
+        }
 
     }
 
